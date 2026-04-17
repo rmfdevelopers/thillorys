@@ -8,18 +8,18 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { 
-  Heart, 
-  Scissors, 
-  Palette, 
-  Award, 
-  Users, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  CheckCheck, 
-  ArrowRight, 
-  Loader2, 
+import {
+  Heart,
+  Scissors,
+  Palette,
+  Award,
+  Users,
+  Phone,
+  Mail,
+  MapPin,
+  CheckCheck,
+  ArrowRight,
+  Loader2,
   ImageOff,
   Menu,
   X,
@@ -70,12 +70,12 @@ function SafeImage({ src, alt, fill, width, height, className, priority, fallbac
 }
 
 const Divider = () => (
-  <div className="py-16 flex items-center gap-8 px-8 max-w-6xl mx-auto">
-    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
-    <span className="text-accent font-serif text-xs tracking-[0.4em] uppercase whitespace-nowrap opacity-70">
+  <div className="py-16 flex items-center gap-4 md:gap-8 px-6 max-w-6xl mx-auto">
+    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent hidden sm:block" />
+    <span className="text-accent font-serif text-[10px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] uppercase opacity-70 text-center flex-1 sm:flex-none">
       The Art of Softly Spoken Style
     </span>
-    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
+    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent hidden sm:block" />
   </div>
 );
 
@@ -88,8 +88,19 @@ const Navbar = () => {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    
+    // Safety check for body scroll lock
+    if (mobileMenu) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenu]);
 
   const navLinks = [
     { name: "Atelier", href: "#about" },
@@ -99,7 +110,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-primary/95 backdrop-blur-xl shadow-2xl py-4' : 'bg-transparent py-8'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${(scrolled || mobileMenu) ? 'bg-primary shadow-2xl py-4' : 'bg-transparent py-8'}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         <a href="#home" className="group">
           <div className="flex items-center gap-3">
@@ -109,7 +120,7 @@ const Navbar = () => {
             <span className="font-heading text-2xl tracking-tighter text-white">THILLORYS</span>
           </div>
         </a>
-        
+
         <div className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
             <a key={link.name} href={link.href} className="text-sm font-medium text-white/70 hover:text-accent transition-colors tracking-widest uppercase">
@@ -117,7 +128,7 @@ const Navbar = () => {
             </a>
           ))}
           <a href="#contact" className="bg-accent text-black px-6 py-2.5 text-sm font-bold tracking-widest uppercase hover:brightness-110 transition-all rounded-sm">
-            Book Atelier
+            Book Now
           </a>
         </div>
 
@@ -155,22 +166,19 @@ const Navbar = () => {
 
 const Hero = () => {
   const { ref, isVisible } = useScrollReveal();
-  
+
   return (
     <section id="home" ref={ref} className="min-h-screen grid md:grid-cols-[1.1fr_0.9fr] items-stretch bg-primary overflow-hidden">
       <div className={`flex flex-col justify-center px-8 md:px-20 py-24 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0 skew-y-0' : 'opacity-0 translate-y-8 skew-y-1'}`}>
-        <p className="text-accent font-serif text-sm tracking-[0.5em] uppercase mb-8 opacity-70">
-          Est. Ibadan, Nigeria
-        </p>
         <h1 className="font-heading text-6xl md:text-[5.5rem] font-normal text-white leading-[0.85] tracking-tighter">
-          Timeless Art <br/> of You
+          Timeless Art <br /> of You
         </h1>
         <p className="text-white/45 mt-10 text-xl max-w-md leading-relaxed font-serif italic">
           Step into a world where style is softly spoken and every stitch is a legacy. Experience the art of bespoke bridal and fashion design.
         </p>
         <div className="flex gap-6 mt-12 flex-wrap">
           <a href="#contact" className="bg-accent text-black px-10 py-4 font-bold tracking-widest uppercase hover:brightness-110 hover:scale-[1.02] transition-all duration-300">
-            Book Your Atelier Visit
+            Book Visit
           </a>
         </div>
         <div className="mt-20 flex gap-12 border-t border-white/10 pt-10">
@@ -197,7 +205,7 @@ const Hero = () => {
 
 const About = () => {
   const { ref, isVisible } = useScrollReveal();
-  
+
   return (
     <section id="about" ref={ref} className="py-32 px-6 bg-secondary text-primary relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-1 bg-accent/20" />
@@ -206,13 +214,13 @@ const About = () => {
           <div className="relative aspect-[4/5] w-full max-w-md mx-auto">
             <div className="absolute -inset-4 border border-accent/20 translate-x-4 translate-y-4" />
             <div className="relative h-full w-full overflow-hidden">
-               <SafeImage src="https://images.unsplash.com/photo-1601846610114-e85058d3619d?q=80&w=1080" alt="About Thillorys" fill className="object-cover" />
+              <SafeImage src="https://images.unsplash.com/photo-1601846610114-e85058d3619d?q=80&w=1080" alt="About Thillorys" fill className="object-cover" />
             </div>
           </div>
         </div>
         <div className={`transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
           <h2 className="font-heading text-5xl md:text-6xl text-primary leading-tight mb-8">
-            The Art of Softly <br/> Spoken Style
+            The Art of Softly <br /> Spoken Style
           </h2>
           <p className="text-primary/70 text-xl leading-relaxed font-serif max-w-lg italic mb-10">
             At Thillorys, we believe that true elegance doesn&apos;t need to shout. Our Ibadan-based atelier is dedicated to the creation of bridal and prom wear that feels like a second skin—refined, ethereal, and undeniably you.
@@ -292,7 +300,7 @@ const Products = () => {
 
           <div className="md:col-span-5 flex flex-col gap-8">
             {products.slice(1).map((p, i) => (
-              <div key={i} 
+              <div key={i}
                 style={{ transitionDelay: `${(i + 1) * 200}ms` }}
                 className={`flex-1 group relative rounded-sm overflow-hidden h-full transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
                 <SafeImage src={p.img} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-1000" />
@@ -336,7 +344,7 @@ const Gallery = () => {
         </div>
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           {images.map((src, i) => (
-            <div key={i} 
+            <div key={i}
               style={{ transitionDelay: `${i * 100}ms` }}
               className={`break-inside-avoid relative group rounded-sm overflow-hidden transition-all duration-1000 ${isVisible ? 'animate-blurIn' : 'opacity-0'}`}>
               <SafeImage src={src} alt={`Lookbook ${i}`} width={600} height={800} className="w-full h-auto object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all duration-700" />
@@ -350,7 +358,6 @@ const Gallery = () => {
 };
 
 const Process = () => {
-  const { ref, isVisible } = useScrollReveal();
   const steps = [
     { number: "01", title: "The Vision", description: "A collaborative session to map your style and silhouette preferences." },
     { number: "02", title: "The Toile", description: "Creating the foundation of your garment with precise measurements." },
@@ -358,27 +365,31 @@ const Process = () => {
   ];
 
   return (
-    <section ref={ref} className="py-32 px-6 bg-secondary text-primary">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="font-heading text-5xl text-primary mb-20 text-center">The Atelier Journey</h2>
-        <div className="relative">
-          <div className={`absolute left-6 top-0 bottom-0 w-px bg-accent/20 hidden md:block transition-all duration-1500 ${isVisible ? 'scale-y-100' : 'scale-y-0'} origin-top`} />
-          <div className="space-y-20">
-            {steps.map((step, i) => (
-              <div key={i} className={`flex gap-12 items-start group transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`} style={{ transitionDelay: `${i * 200}ms` }}>
-                <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center shrink-0 relative z-10 font-heading text-xl shadow-xl shadow-accent/20">
+    <section id="process" className="py-32 px-6 bg-secondary text-primary relative">
+      <div className="max-w-4xl mx-auto">
+        <div className="sticky top-32 mb-20">
+          <h2 className="font-heading text-5xl md:text-7xl text-primary uppercase text-center">Our Process</h2>
+          <div className="w-20 h-1 bg-accent mx-auto mt-6" />
+        </div>
+
+        <div className="space-y-4 md:space-y-12">
+          {steps.map((step, i) => (
+            <div key={i} className="sticky top-64 bg-white p-10 md:p-16 border border-primary/5 shadow-2xl rounded-sm mb-32">
+              <div className="flex flex-col md:flex-row gap-12 items-start group">
+                <div className="w-16 h-16 rounded-full bg-accent text-white flex items-center justify-center shrink-0 font-heading text-2xl shadow-xl shadow-accent/20">
                   {step.number}
                 </div>
-                <div className="pt-2">
-                  <h3 className="font-heading text-3xl text-primary mb-4 group-hover:text-accent transition-colors">{step.title}</h3>
-                  <p className="text-primary/60 text-lg leading-relaxed font-serif italic max-w-xl">{step.description}</p>
+                <div>
+                  <h3 className="font-heading text-4xl text-primary mb-6">{step.title}</h3>
+                  <p className="text-primary/70 text-xl leading-relaxed font-serif italic max-w-xl">{step.description}</p>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
+
         <div className="mt-24 text-center">
-           <p className="text-accent font-serif text-sm tracking-widest uppercase mb-4">Sharp craftsmanship, nationwide delivery.</p>
+          <p className="text-accent font-serif text-sm tracking-widest uppercase mb-4">Sharp craftsmanship, nationwide delivery.</p>
         </div>
       </div>
     </section>
@@ -386,32 +397,60 @@ const Process = () => {
 };
 
 const Testimonials = () => {
-  const { ref, isVisible } = useScrollReveal();
+  const [active, setActive] = useState(0);
   const items = [
     { name: "Tiwa Adebayo", text: "The softest silk and the most perfect fit I have ever experienced. Thillorys made my wedding day feel like a dream.", role: "Bridal Client" },
     { name: "Oluchi Okafor", text: "A masterclass in tailoring. My prom dress was the talk of the evening.", role: "Prom Client" }
   ];
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActive(prev => (prev + 1) % items.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <section ref={ref} className="py-32 px-6 bg-primary border-y border-white/5">
+    <section className="py-32 px-6 bg-primary border-y border-white/5 overflow-hidden">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 className="font-heading text-5xl text-white mb-20">Voices of Elegance</h2>
-        <div className="space-y-16">
+        {/* Isolated Header */}
+        <div className="mb-24">
+          <h2 className="font-heading text-4xl text-accent uppercase tracking-widest opacity-40">Voices of Elegance</h2>
+          <div className="w-12 h-px bg-accent/30 mx-auto mt-4" />
+        </div>
+
+        {/* Carousel Container with defined height */}
+        <div className="relative min-h-[300px] md:min-h-[350px]">
           {items.map((t, i) => (
-            <div key={i} className={`relative transition-all duration-1000 ${isVisible ? 'animate-rotateFade' : 'opacity-0'}`} style={{ transitionDelay: `${i * 300}ms` }}>
-              <div className="text-accent/30 text-[10rem] font-serif leading-none absolute -top-20 left-0 pointer-events-none select-none italic opacity-20">&ldquo;</div>
-              <p className="text-white/80 text-2xl md:text-3xl font-serif italic relative z-10 leading-relaxed">
+            <div
+              key={i}
+              className={`transition-all duration-1000 absolute inset-0 flex flex-col items-center justify-center ${active === i ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
+                }`}
+            >
+              <div className="text-accent/30 text-[8rem] font-serif leading-none absolute -top-12 left-0 pointer-events-none select-none italic opacity-10">&ldquo;</div>
+              <p className="text-white text-2xl md:text-4xl font-serif italic relative z-10 leading-relaxed max-w-3xl">
                 {t.text}
               </p>
-              <div className="mt-8 flex items-center justify-center gap-4">
-                <div className="h-px w-10 bg-accent/40" />
+              <div className="mt-12 flex items-center justify-center gap-4">
+                <div className="h-px w-8 bg-accent/40" />
                 <div>
-                  <p className="font-heading text-xl text-white tracking-widest">{t.name}</p>
-                  <p className="text-accent text-[10px] uppercase tracking-[0.4em] mt-1">{t.role}</p>
+                  <p className="font-heading text-2xl text-white tracking-[0.2em] uppercase">{t.name}</p>
+                  <p className="text-accent text-[10px] uppercase tracking-[0.4em] mt-2 font-bold opacity-70">{t.role}</p>
                 </div>
-                <div className="h-px w-10 bg-accent/40" />
+                <div className="h-px w-8 bg-accent/40" />
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Unified Pagination */}
+        <div className="mt-20 flex justify-center gap-4">
+          {items.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={`h-1 transition-all duration-500 rounded-full ${active === i ? 'bg-accent w-12' : 'bg-white/10 w-4'}`}
+            />
           ))}
         </div>
       </div>
@@ -438,24 +477,24 @@ const Contact = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-32 grid md:grid-cols-2 gap-20 items-center">
         <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
           <h2 className="font-heading text-7xl md:text-8xl text-white leading-none mb-10">
-            Begin Your <br/> Story
+            Begin Your <br /> Story
           </h2>
           <div className="space-y-8">
             <div className="flex items-center gap-6 group">
               <div className="w-12 h-12 border border-white/20 flex items-center justify-center rounded-full group-hover:border-accent transition-colors">
-                 <Instagram className="text-white group-hover:text-accent" size={20} />
+                <Instagram className="text-white group-hover:text-accent" size={20} />
               </div>
               <span className="text-white/60 tracking-widest uppercase text-sm font-bold">@thillorys</span>
             </div>
-            <div className="flex items-center gap-6 group">
-              <div className="w-12 h-12 border border-white/20 flex items-center justify-center rounded-full group-hover:border-accent transition-colors">
-                 <Phone className="text-white group-hover:text-accent" size={20} />
+            <div className="flex items-center gap-4 md:gap-6 group">
+              <div className="w-12 h-12 border border-white/20 flex items-center justify-center rounded-full shrink-0 group-hover:border-accent transition-colors">
+                <Phone className="text-white group-hover:text-accent" size={20} />
               </div>
-              <span className="text-white/60 tracking-widest uppercase text-sm font-bold">wa.me/message/JTC4N22MWZXZK1</span>
+              <span className="text-white/60 tracking-widest uppercase text-[10px] md:text-sm font-bold break-all">wa.me/message/JTC4N22MWZXZK1</span>
             </div>
             <div className="flex items-center gap-6 group">
               <div className="w-12 h-12 border border-white/20 flex items-center justify-center rounded-full group-hover:border-accent transition-colors">
-                 <MapPin className="text-white group-hover:text-accent" size={20} />
+                <MapPin className="text-white group-hover:text-accent" size={20} />
               </div>
               <span className="text-white/60 tracking-widest uppercase text-sm font-bold">Ibadan, Nigeria</span>
             </div>

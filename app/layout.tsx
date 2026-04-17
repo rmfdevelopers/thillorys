@@ -1,13 +1,13 @@
-import { Metal_Mania, EB_Garamond } from 'next/font/google';
+import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
 
-const heading = Metal_Mania({ 
-  weight: '400',
+const heading = Cormorant_Garamond({ 
+  weight: ['300', '400', '500', '600', '700'],
   subsets: ['latin'], 
   variable: '--font-heading' 
 });
 
-const body = EB_Garamond({ 
+const body = Inter({ 
   subsets: ['latin'], 
   variable: '--font-body' 
 });
